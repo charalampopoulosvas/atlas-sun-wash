@@ -46,6 +46,13 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
+  --color-solar: var(--solar);
+  --color-solar-glow: var(--solar-glow);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -62,26 +69,34 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.5rem;
+  --background: oklch(0.985 0.002 90);
+  --foreground: oklch(0.18 0.012 240);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.18 0.012 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.18 0.012 240);
+  --primary: oklch(0.18 0.012 240);
+  --primary-foreground: oklch(0.985 0.002 90);
+  --secondary: oklch(0.95 0.005 90);
+  --secondary-foreground: oklch(0.18 0.012 240);
+  --muted: oklch(0.94 0.005 90);
+  --muted-foreground: oklch(0.45 0.012 240);
+  --accent: oklch(0.78 0.165 65);
+  --accent-foreground: oklch(0.18 0.012 240);
+  --solar: oklch(0.78 0.165 65);
+  --solar-glow: oklch(0.86 0.155 78);
+  --ink: oklch(0.16 0.012 240);
+  --ink-soft: oklch(0.26 0.012 240);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.9 0.008 90);
+  --input: oklch(0.9 0.008 90);
+  --ring: oklch(0.78 0.165 65);
+  --gradient-solar: linear-gradient(135deg, var(--solar) 0%, var(--solar-glow) 100%);
+  --gradient-dawn: linear-gradient(180deg, oklch(0.22 0.02 240) 0%, oklch(0.16 0.012 240) 100%);
+  --shadow-glow: 0 20px 60px -20px color-mix(in oklab, var(--solar) 45%, transparent);
+  --shadow-soft: 0 10px 30px -10px oklch(0.18 0.012 240 / 0.15);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +155,54 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
+
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .font-mono { font-family: var(--font-mono); }
+  .bg-gradient-solar { background-image: var(--gradient-solar); }
+  .bg-gradient-dawn { background-image: var(--gradient-dawn); }
+  .text-solar { color: var(--solar); }
+  .bg-solar { background-color: var(--solar); }
+  .bg-ink { background-color: var(--ink); }
+  .text-ink { color: var(--ink); }
+  .ring-solar { --tw-ring-color: var(--solar); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 3px 3px;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+.shimmer::after {
+  content: "";
+  position: absolute; top: 0; bottom: 0; width: 40%;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--solar) 18%, transparent), transparent);
+  animation: shimmer 4s infinite linear;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
